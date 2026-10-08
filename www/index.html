@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BonLoc</title>
+  <style>
+    body {
+      background-color: #0d1117;
+      color: #ffffff;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 20px 30px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    .logo {
+      width: 45px;
+      height: 45px;
+      background: #38bdf8;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0d1117;
+      font-weight: bold;
+      font-size: 20px;
+    }
+    .title { font-size: 11px; color: #38bdf8; font-weight: bold; letter-spacing: 1px; }
+    .lieu { font-size: 22px; font-weight: bold; margin-top: 2px; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="logo">📍</div>
+    <div>
+      <div class="title">BONLOC</div>
+      <div class="lieu" id="location">Mikaroka...</div>
+    </div>
+  </div>
+
+  <script>
+    function updateLocation() {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+            const data = await res.json();
+            const city = data.address.suburb || data.address.village || data.address.town || data.address.city || "Ivato";
+            document.getElementById('location').textContent = city;
+          } catch(e) {
+            document.getElementById('location').textContent = "Erreur Reseau";
+          }
+        }, () => {
+          document.getElementById('location').textContent = "Vohoy ny GPS";
+        });
+      }
+    }
+    window.onload = updateLocation;
+  </script>
+</body>
+</html>
