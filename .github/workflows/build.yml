@@ -2,7 +2,7 @@ name: Build BonLoc APK
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ "main", "master", "principal" ]
 
 jobs:
   build:
@@ -35,7 +35,7 @@ jobs:
       - name: Build Android APK
         run: |
           cd bonloc_app
-          cordova build android --debug
+          cordova build android --no-telemetry --debug
 
       - name: Upload APK File
         uses: actions/upload-artifact@v3
